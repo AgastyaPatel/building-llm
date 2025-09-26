@@ -27,7 +27,7 @@ if __name__ == "__main__":
     qkv = attn.qkv(x)
     log(f"linear qkv: {tuple(qkv.shape)} = (B, T, 3 * d_model)")
 
-    qkv = qkv.view(B, T, 3, n_heads, d_model, d_head)
+    qkv = qkv.view(B, T, 3, n_heads, d_head)
     q, k, v = qkv.unbind(dim=2)
     log(f"q,k,v split: q={tuple(q.shape)} k={tuple(k.shape)} v={tuple(v.shape)}")
 

@@ -16,6 +16,8 @@ class SingleHeadSelfAttention(nn.Module):
         trace_shapes: whether to trace the shapes of the tensors
     """
     def __init__(self, d_model: int, d_k: int, dropout: float = 0.0, trace_shapes: bool = False):
+        super().__init__()
+        self.d_k = d_k  # Store d_k as instance variable for use in forward
         self.q = nn.Linear(d_model, d_k, bias=False)
         self.k = nn.Linear(d_model, d_k, bias=False)
         self.v = nn.Linear(d_model, d_k, bias=False)
