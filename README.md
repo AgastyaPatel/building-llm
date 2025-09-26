@@ -67,3 +67,13 @@ Output: representation of target tokens so far, guided by encoder context.
 
 Implementing masked attention so this can be used for decoder.
 Implementing simple positional_encoding
+
+## Part 1 — Core Transformer Architecture
+- **1.1** Positional embeddings (absolute learned vs. sinusoidal)
+- **1.2** Self-attention from first principles (manual computation with a tiny example)
+- **1.3** Building a *single attention head* in PyTorch
+- **1.4** Multi-head attention (splitting, concatenation, projections)
+- **1.5** Feed-forward networks (MLP layers) — GELU, dimensionality expansion
+- **1.5** Residual connections & **LayerNorm**
+- **1.6** Stacking into a full Transformer block
+
