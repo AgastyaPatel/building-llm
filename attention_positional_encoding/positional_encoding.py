@@ -19,7 +19,7 @@ class LearnedPositionalEncoding(nn.Module):
     def forward(self, x: torch.Tensor):
         # x: (B, T, d_model)
         B, T, _ = x.shape
-        pos = torch.arrange(T, device=x.device)
+        pos = torch.arange(T, device=x.device)
         pos_emb = self.emb(pos)
         return x + pos_emb.unsqueeze(0)
 
@@ -30,8 +30,8 @@ class SinusoidalPositionalEncoding(nn.Module):
     def __init__(self, d_model: int, max_len: int = 1000):
         super().__init__()
         pe = torch.zeros(max_len, d_model)
-        position = torch.arrange(0, max_len, dtype = torch.float).unsqueeze(1)
-        div_term = torch.exp(torch.arrange(0, d_model, 2).float() * -(math.log(10000)/ d_model))
+        position = torch.arange(0, max_len, dtype = torch.float).unsqueeze(1)
+        div_term = torch.exp(torch.arange(0, d_model, 2).float() * -(math.log(10000)/ d_model))
         pe[:, 0::2] = torch.sin(position * div_term)
         pe[:, 1::2] = torch.cos(position * div_term)
         self.register_buffer("pe", pe)  # this is a buffer which becomes a parameter of the model without gradients
