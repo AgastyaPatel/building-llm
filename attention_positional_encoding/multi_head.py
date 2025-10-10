@@ -21,7 +21,7 @@ class MultiHeadSelfAttention(nn.Module):
         d_model (int): embedding dimension
     """
     
-    def __init__(self, d_model: int, n_heads: int, dropout: float = 0.0, trace_shapes: bool = False):
+    def __init__(self, d_model: int, n_heads: int, dropout: float = 0.0, trace_shapes: bool = False, causal: bool = True):
         super().__init__()
         assert d_model % n_heads == 0, "d_model must be divisible by n_heads"
         self.d_model = d_model
@@ -29,6 +29,7 @@ class MultiHeadSelfAttention(nn.Module):
         self.d_head = d_model // n_heads
         self.dropout = nn.Dropout(dropout)
         self.trace_shapes = trace_shapes
+        self.causal = causal  # Whether to apply causal masking
 
         self.qkv = nn.Linear(d_model, 3 * d_model, bias=False)
         self.proj = nn.Linear(d_model, d_model, bias=False)
@@ -50,10 +51,11 @@ class MultiHeadSelfAttention(nn.Module):
         scale = 1.0 / math.sqrt(self.d_head)
         attention = torch.matmul(q, k.transpose(-2, -1)) * scale
         
-        # mask out the upper triangle of the attention matrix
-        mask = casual_mask(T, device=x.device)
-        
-        attention = attention.masked_fill(mask, float("-inf"))
+        # Apply causal mask only if specified (for decoder-style attention)
+        if self.causal:
+            mask = casual_mask(T, device=x.device)
+            attention = attention.masked_fill(mask, float("-inf"))
+            
         w = F.softmax(attention, dim=-1)
         w = self.dropout(w)
         ctx = torch.matmul(w, v)
